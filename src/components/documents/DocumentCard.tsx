@@ -6,14 +6,17 @@ import {
   Sparkles,
   Loader2,
   Brain,
+  ClipboardCheck,
 } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
+
 import type { StudyDocument } from "@/types/document"
 
 import { generateSummary } from "@/services/ai.service"
+import { generateQuiz } from "@/services/quiz.service"
 
 import {
   generateFlashcards,
@@ -30,8 +33,20 @@ interface Props {
 export default function DocumentCard({
   document,
 }: Props) {
-  const [loading, setLoading] =
-    useState(false)
+  const [
+    summaryLoading,
+    setSummaryLoading,
+  ] = useState(false)
+
+  const [
+    quizLoading, 
+    setQuizLoading
+  ] = useState(false)
+
+  const [
+    flashcardsLoading,
+    setFlashcardsLoading,
+  ] = useState(false)
 
   const [summary, setSummary] =
     useState("")
@@ -42,7 +57,7 @@ export default function DocumentCard({
   const handleGenerateSummary =
     async () => {
       try {
-        setLoading(true)
+        setSummaryLoading(true)
 
         const response =
           await generateSummary(
@@ -57,14 +72,14 @@ export default function DocumentCard({
           "Could not generate summary"
         )
       } finally {
-        setLoading(false)
+        setSummaryLoading(false)
       }
     }
 
   const handleGenerateFlashcards =
     async () => {
       try {
-        setLoading(true)
+        setFlashcardsLoading(true)
 
         await generateFlashcards(
           document.id
@@ -78,7 +93,28 @@ export default function DocumentCard({
           "Could not generate flashcards"
         )
       } finally {
-        setLoading(false)
+        setFlashcardsLoading(false)
+      }
+    }
+
+  const handleGenerateQuiz =
+    async () => {
+      try {
+        setQuizLoading(true)
+
+        await generateQuiz(
+          document.id
+        )
+
+        toast.success(
+          "Quiz generated"
+        )
+      } catch {
+        toast.error(
+          "Could not generate quiz"
+        )
+      } finally {
+      setQuizLoading(false)
       }
     }
 
@@ -121,10 +157,10 @@ export default function DocumentCard({
               onClick={
                 handleGenerateSummary
               }
-              disabled={loading}
+              disabled={summaryLoading}
               className="w-full"
             >
-              {loading ? (
+              {summaryLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
                 <Sparkles />
@@ -138,16 +174,31 @@ export default function DocumentCard({
               onClick={
                 handleGenerateFlashcards
               }
-              disabled={loading}
+              disabled={flashcardsLoading}
               className="w-full"
             >
-              {loading ? (
+              {flashcardsLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
                 <Brain />
               )}
 
               Generate Flashcards
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={handleGenerateQuiz}
+              disabled={quizLoading}
+              className="w-full"
+            >
+              {quizLoading ? (
+                  <Loader2 className="animate-spin" />
+              ) : (
+                  <ClipboardCheck />
+              )}
+
+              Generate Quiz
             </Button>
           </div>
         </CardContent>
