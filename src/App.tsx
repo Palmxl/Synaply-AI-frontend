@@ -4,6 +4,7 @@ import AppLayout from "./layouts/AppLayout"
 
 import Dashboard from "./pages/Dashboard"
 import Documents from "./pages/Documents"
+import ProtectedRoute from "./routes/ProtectedRoute"
 // import Chat from "./pages/Chat"
 // import Flashcards from "./pages/Flashcards"
 // import Quizzes from "./pages/Quizzes"
@@ -25,6 +26,7 @@ function App() {
         <Route path="/flashcards" element={<Flashcards />} />
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/settings" element={<Settings />} /> */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>} />
       </Route>
     </Routes>
   )
