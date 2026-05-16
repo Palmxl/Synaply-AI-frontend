@@ -5,22 +5,28 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
+import { registerRequest } from "@/services/auth.service"
+
 import { toast } from "sonner"
 
 export default function Register() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const handleRegister = () => {
-    try {
-      toast.success("Account created successfully")
+  const handleRegister = async () => {
+    if (!email || !password) {
+      toast.error("Please fill all fields")
+      return
+    }
 
-      console.log({
-        email,
-        password,
+    try {
+      await registerRequest({
+        email, password
       })
+
+      toast.success("Account created successfully")
     } catch {
-      toast.error("Something went wrong")
+      toast.error("Could not create account")
     }
   }
 

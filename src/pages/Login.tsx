@@ -9,6 +9,8 @@ import { toast } from "sonner"
 
 import { useAuth } from "@/context/AuthContext"
 
+import { loginRequest } from "@/services/auth.service"
+
 export default function Login() {
   const navigate = useNavigate()
 
@@ -24,7 +26,11 @@ export default function Login() {
     }
 
     try {
-      login("fake-jwt-token", {
+      const response = await loginRequest({
+        email, password
+      })
+
+      login(response.access_token, {
         email,
       })
 
