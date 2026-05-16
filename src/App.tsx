@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard"
 import Documents from "./pages/Documents"
 import Chat from "./pages/Chat"
 import Flashcards from "./pages/Flashcards"
-// import Quizzes from "./pages/Quizzes"
+import Quizzes from "./pages/Quizzes"
 // import Settings from "./pages/Settings"
 
 import Login from "./pages/Login"
@@ -33,8 +33,8 @@ function App() {
         <Route path="/documents" element={<Documents />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/flashcards" element={<Flashcards />} />
-        {/* <Route path="/quizzes" element={<Quizzes />} />
-        <Route path="/settings" element={<Settings />} /> */}
+        <Route path="/quizzes" element={<Quizzes />} />
+        {/* <Route path="/settings" element={<Settings />} /> */}
       </Route>
     </Routes>
   )
