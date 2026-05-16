@@ -34,8 +34,10 @@ export default function QuizPlayer({
 
   const handleNext = () => {
     if (
-      selected ===
+      selected.trim().toUpperCase() ===
       currentQuestion.correct_answer
+      .trim()
+      .toUpperCase()
     ) {
       setScore((prev) => prev + 1)
     }
