@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 
 import { Input } from "@/components/ui/input"
 
+import useChatSocket from "@/hooks/useChatSocket"
+
 import ChatMessageBubble from "./ChatMessageBubble"
 
 import type { ChatMessage } from "@/types/chat"
@@ -28,12 +30,30 @@ export default function ChatWindow({
   const [loading, setLoading] =
     useState(false)
 
+  const { sendMessage: sendSocketMessage } =
+    useChatSocket((message) => {
+      const assistantMessage: ChatMessage =
+        {
+          role: "assistant",
+          content: message,
+        }
+
+      setMessages((prev) => [
+        ...prev,
+        assistantMessage,
+      ])
+
+      setLoading(false)
+    })
+
   const handleSend = async () => {
     if (!input.trim()) return
 
+    const question = input
+
     const userMessage: ChatMessage = {
       role: "user",
-      content: input,
+      content: question,
     }
 
     setMessages((prev) => [
@@ -41,34 +61,11 @@ export default function ChatWindow({
       userMessage,
     ])
 
-    const question = input
-
     setInput("")
 
-    try {
-      setLoading(true)
+    setLoading(true)
 
-      const response =
-        await sendMessage(
-          documentId,
-          question
-        )
-
-      const assistantMessage: ChatMessage =
-        {
-          role: "assistant",
-          content: response.answer,
-        }
-
-      setMessages((prev) => [
-        ...prev,
-        assistantMessage,
-      ])
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
+    sendSocketMessage(question)
   }
 
   return (
