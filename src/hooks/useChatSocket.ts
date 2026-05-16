@@ -23,9 +23,15 @@ export default function useChatSocket(
   }, [onMessage])
 
   const sendMessage = (
-    message: string
+    documentId: number,
+    question: string
   ) => {
-    socket.current?.send(message)
+    socket.current?.send(
+      JSON.stringify({
+        document_id: documentId,
+        question,
+      })
+    )
   }
 
   return {

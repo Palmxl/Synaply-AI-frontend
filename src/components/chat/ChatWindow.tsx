@@ -32,18 +32,37 @@ export default function ChatWindow({
 
   const { sendMessage: sendSocketMessage } =
     useChatSocket((message) => {
-      const assistantMessage: ChatMessage =
-        {
-          role: "assistant",
-          content: message,
+      if (message === "[DONE]") {
+        setLoading(false)
+
+        return
+      }
+
+      setMessages((prev) => {
+        const updated = [...prev]
+
+        const lastMessage =
+          updated[
+            updated.length - 1
+          ]
+
+        if (
+          lastMessage?.role ===
+          "assistant"
+        ) {
+          lastMessage.content += message
+
+          return [...updated]
         }
 
-      setMessages((prev) => [
-        ...prev,
-        assistantMessage,
-      ])
-
-      setLoading(false)
+        return [
+          ...updated,
+          {
+            role: "assistant",
+            content: message,
+          },
+        ]
+      })
     })
 
   const handleSend = async () => {
@@ -65,7 +84,7 @@ export default function ChatWindow({
 
     setLoading(true)
 
-    sendSocketMessage(question)
+    sendSocketMessage(documentId, question)
   }
 
   return (
