@@ -1,27 +1,40 @@
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  FileText,
+  Brain,
+  ClipboardCheck,
+  Flame,
+} from "lucide-react"
+
+import StatsCard from "@/components/dashboard/StatsCard"
+import StudyChart from "@/components/dashboard/StudyChart"
+import ActivityTimeline from "@/components/dashboard/ActivityTimeline"
 
 const stats = [
   {
     title: "Documents",
     value: "24",
+    icon: FileText,
   },
   {
     title: "Flashcards",
     value: "182",
+    icon: Brain,
   },
   {
     title: "Quizzes",
     value: "12",
+    icon: ClipboardCheck,
   },
   {
     title: "Study Streak",
     value: "14 days",
+    icon: Flame,
   },
 ]
 
 export default function Dashboard() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-4xl font-bold">
           Dashboard
@@ -34,21 +47,21 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <Card
+          <StatsCard
             key={stat.title}
-            className="bg-zinc-900 border-zinc-800 text-white"
-          >
-            <CardContent className="p-6">
-              <p className="text-zinc-400 text-sm">
-                {stat.title}
-              </p>
-
-              <h2 className="text-3xl font-bold mt-2">
-                {stat.value}
-              </h2>
-            </CardContent>
-          </Card>
+            title={stat.title}
+            value={stat.value}
+            icon={stat.icon}
+          />
         ))}
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <StudyChart />
+        </div>
+
+        <ActivityTimeline />
       </div>
     </div>
   )
