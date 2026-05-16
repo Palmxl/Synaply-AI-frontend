@@ -6,32 +6,59 @@ export default function useChatSocket(
   const socket =
     useRef<WebSocket | null>(null)
 
+  const onMessageRef =
+    useRef(onMessage)
+
   useEffect(() => {
-    socket.current = new WebSocket(
+    onMessageRef.current =
+      onMessage
+  }, [onMessage])
+
+  useEffect(() => {
+    const ws = new WebSocket(
       "ws://localhost:8000/chat"
     )
 
-    socket.current.onmessage = (
-      event
-    ) => {
-      onMessage(event.data)
+    socket.current = ws
+
+    ws.onmessage = (event) => {
+      onMessageRef.current(
+        event.data
+      )
+    }
+
+    ws.onopen = () => {
+      console.log(
+        "WebSocket connected"
+      )
+    }
+
+    ws.onclose = () => {
+      console.log(
+        "WebSocket disconnected"
+      )
     }
 
     return () => {
-      socket.current?.close()
+      ws.close()
     }
-  }, [onMessage])
+  }, [])
 
   const sendMessage = (
     documentId: number,
     question: string
   ) => {
-    socket.current?.send(
-      JSON.stringify({
-        document_id: documentId,
-        question,
-      })
-    )
+    if (
+      socket.current?.readyState ===
+      WebSocket.OPEN
+    ) {
+      socket.current.send(
+        JSON.stringify({
+          document_id: documentId,
+          question,
+        })
+      )
+    }
   }
 
   return {

@@ -1,6 +1,9 @@
 import { useState } from "react"
 
-import { Loader2, Send } from "lucide-react"
+import {
+  Loader2,
+  Send,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -11,8 +14,6 @@ import useChatSocket from "@/hooks/useChatSocket"
 import ChatMessageBubble from "./ChatMessageBubble"
 
 import type { ChatMessage } from "@/types/chat"
-
-import { sendMessage } from "@/services/chat.service"
 
 interface Props {
   documentId: number
@@ -47,12 +48,23 @@ export default function ChatWindow({
           ]
 
         if (
-          lastMessage?.role ===
-          "assistant"
+          lastMessage &&
+          lastMessage.role ===
+            "assistant"
         ) {
-          lastMessage.content += message
+          const updatedLastMessage =
+            {
+              ...lastMessage,
+              content:
+                lastMessage.content +
+                message,
+            }
 
-          return [...updated]
+          updated[
+            updated.length - 1
+          ] = updatedLastMessage
+
+          return updated
         }
 
         return [
@@ -68,12 +80,13 @@ export default function ChatWindow({
   const handleSend = async () => {
     if (!input.trim()) return
 
-    const question = input
+    const question = input.trim()
 
-    const userMessage: ChatMessage = {
-      role: "user",
-      content: question,
-    }
+    const userMessage: ChatMessage =
+      {
+        role: "user",
+        content: question,
+      }
 
     setMessages((prev) => [
       ...prev,
@@ -84,11 +97,15 @@ export default function ChatWindow({
 
     setLoading(true)
 
-    sendSocketMessage(documentId, question)
+    sendSocketMessage(
+      documentId,
+      question
+    )
   }
 
   return (
     <div className="border border-zinc-800 bg-zinc-900 rounded-3xl h-[700px] flex flex-col overflow-hidden">
+      {/* MESSAGES */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.length === 0 && (
           <div className="h-full flex items-center justify-center text-zinc-500">
@@ -96,12 +113,14 @@ export default function ChatWindow({
           </div>
         )}
 
-        {messages.map((message, index) => (
-          <ChatMessageBubble
-            key={index}
-            message={message}
-          />
-        ))}
+        {messages.map(
+          (message, index) => (
+            <ChatMessageBubble
+              key={index}
+              message={message}
+            />
+          )
+        )}
 
         {loading && (
           <div className="flex justify-start">
@@ -112,6 +131,7 @@ export default function ChatWindow({
         )}
       </div>
 
+      {/* INPUT */}
       <div className="border-t border-zinc-800 p-4 flex gap-3">
         <Input
           value={input}
@@ -121,7 +141,10 @@ export default function ChatWindow({
           placeholder="Ask something about your PDF..."
           className="bg-zinc-800 border-zinc-700"
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (
+              e.key === "Enter" &&
+              !loading
+            ) {
               handleSend()
             }
           }}
@@ -131,7 +154,7 @@ export default function ChatWindow({
           onClick={handleSend}
           disabled={loading}
         >
-          <Send />
+          <Send size={18} />
         </Button>
       </div>
     </div>
