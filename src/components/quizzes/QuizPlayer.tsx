@@ -15,7 +15,7 @@ export default function QuizPlayer({
     useState(0)
 
   const [score, setScore] =
-    useState(0)
+    useState<number>(0)
 
   const [selected, setSelected] =
     useState("")
@@ -33,14 +33,17 @@ export default function QuizPlayer({
   }
 
   const handleNext = () => {
-    if (
+    const isCorrect =
       selected.trim().toUpperCase() ===
       currentQuestion.correct_answer
-      .trim()
-      .toUpperCase()
-    ) {
-      setScore((prev) => prev + 1)
-    }
+        .trim()
+        .toUpperCase()
+
+    const newScore = isCorrect
+      ? score + 1
+      : score
+
+    setScore(newScore)
 
     setSelected("")
 
