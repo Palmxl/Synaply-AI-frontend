@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
+import { toast } from "sonner"
+
 import { useAuth } from "@/context/AuthContext"
 
 export default function Login() {
@@ -15,12 +17,23 @@ export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const handleLogin = () => {
-    login("fake-jwt-token", {
-      email,
-    })
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Please fill all fields")
+      return
+    }
 
-    navigate("/")
+    try {
+      login("fake-jwt-token", {
+        email,
+      })
+
+      toast.success("Logged in successfully")
+
+      navigate("/")
+    } catch {
+      toast.error("Invalid credentials")
+    }
   }
 
   return (
@@ -62,7 +75,7 @@ export default function Login() {
           </div>
 
           <p className="text-sm text-zinc-400 mt-6">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <Link
               to="/register"
               className="text-white hover:underline"
