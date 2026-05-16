@@ -23,6 +23,9 @@ export default function QuizPlayer({
   const [finished, setFinished] =
     useState(false)
 
+  const [finalScore, setFinalScore] =
+    useState(0)
+
   const currentQuestion =
     questions[currentIndex]
 
@@ -39,11 +42,11 @@ export default function QuizPlayer({
         .trim()
         .toUpperCase()
 
-    const newScore = isCorrect
+    const updatedScore = isCorrect
       ? score + 1
       : score
 
-    setScore(newScore)
+    setScore(updatedScore)
 
     setSelected("")
 
@@ -51,6 +54,8 @@ export default function QuizPlayer({
       currentIndex ===
       questions.length - 1
     ) {
+      setFinalScore(updatedScore)
+
       setFinished(true)
 
       return
@@ -71,7 +76,7 @@ export default function QuizPlayer({
         </p>
 
         <div className="text-6xl font-bold mt-6">
-          {score}/{questions.length}
+          {finalScore}/{questions.length}
         </div>
       </div>
     )
