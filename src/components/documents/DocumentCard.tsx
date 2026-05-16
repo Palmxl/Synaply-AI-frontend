@@ -5,15 +5,19 @@ import {
   Trash2,
   Sparkles,
   Loader2,
+  Brain,
 } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
-
 import { Button } from "@/components/ui/button"
 
 import type { StudyDocument } from "@/types/document"
 
 import { generateSummary } from "@/services/ai.service"
+
+import {
+  generateFlashcards,
+} from "@/services/flashcard.service"
 
 import SummaryDialog from "./SummaryDialog"
 
@@ -57,6 +61,27 @@ export default function DocumentCard({
       }
     }
 
+  const handleGenerateFlashcards =
+    async () => {
+      try {
+        setLoading(true)
+
+        await generateFlashcards(
+          document.id
+        )
+
+        toast.success(
+          "Flashcards generated"
+        )
+      } catch {
+        toast.error(
+          "Could not generate flashcards"
+        )
+      } finally {
+        setLoading(false)
+      }
+    }
+
   return (
     <>
       <Card className="bg-zinc-900 border-zinc-800 text-white hover:border-zinc-700 transition">
@@ -91,7 +116,7 @@ export default function DocumentCard({
             </Button>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 space-y-3">
             <Button
               onClick={
                 handleGenerateSummary
@@ -106,6 +131,23 @@ export default function DocumentCard({
               )}
 
               Generate Summary
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={
+                handleGenerateFlashcards
+              }
+              disabled={loading}
+              className="w-full"
+            >
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Brain />
+              )}
+
+              Generate Flashcards
             </Button>
           </div>
         </CardContent>
