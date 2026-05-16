@@ -1,26 +1,64 @@
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
+
 import { useDropzone } from "react-dropzone"
 
-import { UploadCloud } from "lucide-react"
+import { UploadCloud, Loader2 } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 
 import { toast } from "sonner"
 
-export default function UploadZone() {
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log(acceptedFiles)
+import {
+  uploadDocument,
+} from "@/services/document.service"
 
-    toast.success("Document uploaded successfully")
-  }, [])
+interface Props {
+  onUploadSuccess: () => void
+}
 
-  const { getRootProps, getInputProps, isDragActive } =
-    useDropzone({
-      onDrop,
-      accept: {
-        "application/pdf": [".pdf"],
-      },
-    })
+export default function UploadZone({
+  onUploadSuccess,
+}: Props) {
+  const [loading, setLoading] =
+    useState(false)
+
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0]
+
+      if (!file) return
+
+      try {
+        setLoading(true)
+
+        await uploadDocument(file)
+
+        toast.success(
+          "Document uploaded successfully"
+        )
+
+        onUploadSuccess()
+      } catch {
+        toast.error(
+          "Could not upload document"
+        )
+      } finally {
+        setLoading(false)
+      }
+    },
+    [onUploadSuccess]
+  )
+
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+  } = useDropzone({
+    onDrop,
+    accept: {
+      "application/pdf": [".pdf"],
+    },
+  })
 
   return (
     <Card
@@ -41,11 +79,20 @@ export default function UploadZone() {
         <input {...getInputProps()} />
 
         <div className="p-4 rounded-full bg-zinc-800 mb-4">
-          <UploadCloud size={40} />
+          {loading ? (
+            <Loader2
+              size={40}
+              className="animate-spin"
+            />
+          ) : (
+            <UploadCloud size={40} />
+          )}
         </div>
 
         <h2 className="text-2xl font-semibold">
-          Upload Study Materials
+          {loading
+            ? "Uploading..."
+            : "Upload Study Materials"}
         </h2>
 
         <p className="text-zinc-400 mt-2">

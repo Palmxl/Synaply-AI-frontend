@@ -1,22 +1,32 @@
+import { useEffect, useState } from "react"
+
 import UploadZone from "@/components/documents/UploadZone"
+
 import DocumentCard from "@/components/documents/DocumentCard"
 
-const documents = [
-  {
-    id: 1,
-    title: "Linear Algebra Notes",
-    subject: "Mathematics",
-    uploadedAt: "2 hours ago",
-  },
-  {
-    id: 2,
-    title: "Operating Systems",
-    subject: "Computer Science",
-    uploadedAt: "Yesterday",
-  },
-]
+import {
+  getDocuments,
+} from "@/services/document.service"
 
 export default function Documents() {
+  const [documents, setDocuments] =
+    useState([])
+
+  const loadDocuments = async () => {
+    try {
+      const data =
+        await getDocuments()
+
+      setDocuments(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    loadDocuments()
+  }, [])
+
   return (
     <div className="space-y-8">
       <div>
@@ -29,13 +39,22 @@ export default function Documents() {
         </p>
       </div>
 
-      <UploadZone />
+      <UploadZone
+        onUploadSuccess={loadDocuments}
+      />
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {documents.map((document) => (
+        {documents.map((document: any) => (
           <DocumentCard
             key={document.id}
-            document={document}
+            document={{
+              id: document.id,
+              title: document.title,
+              subject:
+                document.subject ||
+                "General",
+              uploadedAt: "Recently",
+            }}
           />
         ))}
       </div>
