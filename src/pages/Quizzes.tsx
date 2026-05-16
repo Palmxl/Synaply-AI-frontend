@@ -1,12 +1,27 @@
-import { useEffect, useState } from "react"
+import {
+  useEffect,
+  useState,
+} from "react"
+
+import {
+  useParams,
+} from "react-router-dom"
 
 import QuizPlayer from "@/components/quizzes/QuizPlayer"
 
 import { getQuiz } from "@/services/quiz.service"
 
-import type { QuizQuestion } from "@/types/quiz"
+import type {
+  QuizQuestion,
+} from "@/types/quiz"
 
 export default function Quizzes() {
+  const params = useParams()
+
+  const quizId = Number(
+    params.quizId
+  )
+
   const [questions, setQuestions] =
     useState<QuizQuestion[]>([])
 
@@ -14,24 +29,34 @@ export default function Quizzes() {
     useState(true)
 
   useEffect(() => {
-    const loadQuiz = async () => {
-      try {
-        const data = await getQuiz(1)
+    const loadQuiz =
+      async () => {
+        try {
+          if (!quizId) {
+            setLoading(false)
 
-        setQuestions(data)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoading(false)
+            return
+          }
+
+          const data =
+            await getQuiz(quizId)
+
+          setQuestions(data)
+        } catch (error) {
+          console.error(error)
+        } finally {
+          setLoading(false)
+        }
       }
-    }
 
     loadQuiz()
-  }, [])
+  }, [quizId])
 
   if (loading) {
     return (
-      <div>Loading quiz...</div>
+      <div className="flex items-center justify-center h-[60vh]">
+        Loading quiz...
+      </div>
     )
   }
 

@@ -10,6 +10,14 @@ export async function generateQuiz(
   return response.data
 }
 
+export async function getQuizzes() {
+  const response = await api.get(
+    "/quizzes"
+  )
+
+  return response.data
+}
+
 export async function getQuiz(
   quizId: number
 ) {

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 
 import AppLayout from "./layouts/AppLayout"
 
@@ -13,6 +13,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
+import QuizLibrary from "./pages/QuizLibrary"
 
 function App() {
   return (
@@ -33,7 +34,8 @@ function App() {
         <Route path="/documents" element={<Documents />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/flashcards" element={<Flashcards />} />
-        <Route path="/quizzes" element={<Quizzes />} />
+        <Route path="/quizzes" element={<QuizLibrary />} />
+        <Route path="/quizzes/:quizId" element={<Quizzes />} />
         {/* <Route path="/settings" element={<Settings />} /> */}
       </Route>
     </Routes>

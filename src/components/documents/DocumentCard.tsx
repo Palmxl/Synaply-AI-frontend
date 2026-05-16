@@ -9,13 +9,21 @@ import {
   ClipboardCheck,
 } from "lucide-react"
 
-import { Card, CardContent } from "@/components/ui/card"
+import { useNavigate } from "react-router-dom"
+
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card"
+
 import { Button } from "@/components/ui/button"
 
-
-import type { StudyDocument } from "@/types/document"
+import type {
+  StudyDocument,
+} from "@/types/document"
 
 import { generateSummary } from "@/services/ai.service"
+
 import { generateQuiz } from "@/services/quiz.service"
 
 import {
@@ -33,14 +41,17 @@ interface Props {
 export default function DocumentCard({
   document,
 }: Props) {
+  const navigate =
+    useNavigate()
+
   const [
     summaryLoading,
     setSummaryLoading,
   ] = useState(false)
 
   const [
-    quizLoading, 
-    setQuizLoading
+    quizLoading,
+    setQuizLoading,
   ] = useState(false)
 
   const [
@@ -64,7 +75,9 @@ export default function DocumentCard({
             document.id
           )
 
-        setSummary(response.summary)
+        setSummary(
+          response.summary
+        )
 
         setDialogOpen(true)
       } catch {
@@ -102,25 +115,30 @@ export default function DocumentCard({
       try {
         setQuizLoading(true)
 
-        await generateQuiz(
-          document.id
-        )
+        const response =
+          await generateQuiz(
+            document.id
+          )
 
         toast.success(
           "Quiz generated"
+        )
+
+        navigate(
+          `/quizzes/${response.quiz_id}`
         )
       } catch {
         toast.error(
           "Could not generate quiz"
         )
       } finally {
-      setQuizLoading(false)
+        setQuizLoading(false)
       }
     }
 
   return (
     <>
-      <Card className="bg-zinc-900 border-zinc-800 text-white hover:border-zinc-700 transition">
+      <Card className="bg-zinc-900 border-zinc-800 text-white hover:border-zinc-700 transition-all">
         <CardContent className="p-6">
           <div className="flex items-start justify-between">
             <div className="flex gap-4">
@@ -138,7 +156,10 @@ export default function DocumentCard({
                 </p>
 
                 <p className="text-zinc-500 text-xs mt-3">
-                  Uploaded {document.uploadedAt}
+                  Uploaded{" "}
+                  {
+                    document.uploadedAt
+                  }
                 </p>
               </div>
             </div>
@@ -153,11 +174,14 @@ export default function DocumentCard({
           </div>
 
           <div className="mt-6 space-y-3">
+            {/* SUMMARY */}
             <Button
               onClick={
                 handleGenerateSummary
               }
-              disabled={summaryLoading}
+              disabled={
+                summaryLoading
+              }
               className="w-full"
             >
               {summaryLoading ? (
@@ -169,12 +193,15 @@ export default function DocumentCard({
               Generate Summary
             </Button>
 
+            {/* FLASHCARDS */}
             <Button
               variant="secondary"
               onClick={
                 handleGenerateFlashcards
               }
-              disabled={flashcardsLoading}
+              disabled={
+                flashcardsLoading
+              }
               className="w-full"
             >
               {flashcardsLoading ? (
@@ -186,16 +213,19 @@ export default function DocumentCard({
               Generate Flashcards
             </Button>
 
+            {/* QUIZ */}
             <Button
               variant="outline"
-              onClick={handleGenerateQuiz}
+              onClick={
+                handleGenerateQuiz
+              }
               disabled={quizLoading}
               className="w-full"
             >
               {quizLoading ? (
-                  <Loader2 className="animate-spin" />
+                <Loader2 className="animate-spin" />
               ) : (
-                  <ClipboardCheck />
+                <ClipboardCheck />
               )}
 
               Generate Quiz
@@ -206,7 +236,9 @@ export default function DocumentCard({
 
       <SummaryDialog
         open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        onOpenChange={
+          setDialogOpen
+        }
         summary={summary}
       />
     </>
