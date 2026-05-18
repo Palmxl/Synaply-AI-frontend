@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
 
-  "homepage": "https://Palmxl.github.io/Synaply-AI-frontend",
+  "homepage": "https://Palmxl.github.io/Synaply-AI-frontend/",
 
   "scripts": {
     "dev": "vite",
