@@ -16,7 +16,7 @@ export default function useChatSocket(
 
   useEffect(() => {
     const ws = new WebSocket(
-      "ws://localhost:8000/chat"
+      `${import.meta.env.VITE_WS_URL}/chat`
     )
 
     socket.current = ws
