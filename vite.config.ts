@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite"
 import path from "path"
 
 export default defineConfig({
-  base: "/synaply-ai-frontend/",
+  base: "/Synaply-AI-frontend/",
 
   plugins: [
     react(),
